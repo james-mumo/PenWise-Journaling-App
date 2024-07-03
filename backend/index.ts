@@ -1,21 +1,17 @@
-import express, { Request, Response } from "express";
-import dotenv from "dotenv";
+import express from "express";
+import authRoutes from "./routes/auth";
+import * as dotenv from "dotenv";
+import { initDb } from "./config/database";
 
-// configures dotenv to work in your application
 dotenv.config();
 const app = express();
 
-const PORT = process.env.PORT;
+app.use(express.json());
+app.use("/api/auth", authRoutes);
 
-app.get("/", (request: Request, response: Response) => {
-  response.status(200).send("Hello World");
-});
-
-app
-  .listen(PORT, () => {
-    console.log("Server running at PORT: ", PORT);
-  })
-  .on("error", (error) => {
-    // gracefully handle error
-    throw new Error(error.message);
+const PORT = process.env.PORT! || 5000;
+initDb().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server up and running at http://localhost${PORT}`);
   });
+});

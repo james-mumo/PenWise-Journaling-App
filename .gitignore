@@ -18,6 +18,8 @@ backend/node_modules/
 # backend/dist/
 backend/.env
 backend/build
+backend/ex.ts
+backend/dist
 
 # macOS
 mobile_app/.DS_Store
