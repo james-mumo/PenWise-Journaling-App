@@ -19,9 +19,9 @@ export const authenticateToken = (
   const token = authHeader && authHeader.split(" ")[1];
   if (!token) return res.sendStatus(401);
 
-  jwt.verify(token, JWT_ACCESS_SECRET, (err, decoded) => {
+  jwt.verify(token, JWT_ACCESS_SECRET, (err, user) => {
     if (err) return res.sendStatus(403);
-    req.user = decoded;
+    req.user = user;
     next();
   });
 };

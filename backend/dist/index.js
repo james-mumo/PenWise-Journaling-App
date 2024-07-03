@@ -37,6 +37,6 @@ app.use("/api/auth", auth_1.default);
 const PORT = process.env.PORT || 5000;
 (0, database_1.initDb)().then(() => {
     app.listen(PORT, () => {
-        console.log(`Server up and running at http://localhost${PORT}`);
+        console.log(`Server up and running at http://localhost:${PORT}`);
     });
 });
