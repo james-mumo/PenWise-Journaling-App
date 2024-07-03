@@ -15,7 +15,6 @@ mobile_app/web-build/
 # backend files
 
 backend/node_modules/
-# backend/dist/
 backend/.env
 backend/build
 backend/ex.ts

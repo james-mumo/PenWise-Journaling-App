@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import jwt, { VerifyErrors } from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import User from "../models/user";
+import User from "../models/User";
 import { generateAccessToken, generateRefreshAccessToken } from "../utils/jwt";
 
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
