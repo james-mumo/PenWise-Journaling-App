@@ -92,7 +92,20 @@ class JournalEntry {
   //   method for delting a journal entry
 
   static async delete(id: number): Promise<void> {
-    await pool.query("DELETE FROM journal_entries WHERE id = $id", [id]);
+    await pool.query("DELETE FROM journal_entries WHERE id = $1", [id]);
+  }
+
+  // find all entries for a specific user method
+  static async findAllByUserId(userId: number): Promise<JournalEntry[]> {
+    const result = await pool.query(
+      "SELECT * FROM journal_entries WHERE user_id = $1",
+      [userId]
+    );
+
+    return result.rows.map((row) => {
+      const { id, title, content, category, date, user_id } = row;
+      return new JournalEntry(id, title, content, category, date, user_id);
+    });
   }
 }
 

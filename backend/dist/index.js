@@ -28,12 +28,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const auth_1 = __importDefault(require("./routes/auth"));
+const journalEntryRoutes_1 = __importDefault(require("./routes/journalEntryRoutes"));
 const dotenv = __importStar(require("dotenv"));
 const database_1 = require("./config/database");
 dotenv.config();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use("/api/auth", auth_1.default);
+app.use("/api/journal-entries", journalEntryRoutes_1.default);
 const PORT = process.env.PORT || 5000;
 (0, database_1.initDb)().then(() => {
     app.listen(PORT, () => {
