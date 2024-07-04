@@ -54,7 +54,7 @@ export const getAllJournalEntries = async (req: Request, res: Response) => {
   }
 };
 
-// updating a specific journal entry based on it's id
+// updating a specific journal entry based on id
 export const updateJournalEntry = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, content, category, date } = req.body;
@@ -81,7 +81,7 @@ export const updateJournalEntry = async (req: Request, res: Response) => {
   }
 };
 
-// deleting an entry method
+// deleting a journal entry
 export const deleteJournalEntry = async (req: Request, res: Response) => {
   const { id } = req.params;
 
