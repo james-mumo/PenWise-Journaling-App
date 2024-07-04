@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import JournalEntry from "../models/JournalEntry";
-// import { User } from "../models/User";
 
-// creating a jorunal entry
+// creating a journal entry
 export const createJournalEntry = async (req: Request, res: Response) => {
   const { title, content, category, date } = req.body;
   const userId = req.user.userId;
+
   try {
     const newJournalEntry = await JournalEntry.create(
       title,
@@ -24,16 +24,19 @@ export const createJournalEntry = async (req: Request, res: Response) => {
 // get a journal entry based on id
 export const getJournalEntry = async (req: Request, res: Response) => {
   const { id } = req.params;
+
   try {
     const journalEntry = await JournalEntry.findById(Number(id));
-    if (journalEntry && journalEntry.userId === req.user.userId) {
-      res.status(200).json(journalEntry);
-    } else {
-      res
+
+    if (!journalEntry || journalEntry.userId !== req.user.userId) {
+      return res
         .status(404)
         .json({ error: "Journal entry not found or you do not have access" });
     }
+
+    res.status(200).json(journalEntry);
   } catch (error) {
+    console.error("Failed to fetch journal entry:", error);
     res.status(500).json({ error: "Failed to fetch journal entry" });
   }
 };
@@ -41,6 +44,7 @@ export const getJournalEntry = async (req: Request, res: Response) => {
 // get all journal entries for the current user
 export const getAllJournalEntries = async (req: Request, res: Response) => {
   const userId = req.user.userId;
+
   try {
     const journalEntries = await JournalEntry.findAllByUserId(userId);
     res.status(200).json(journalEntries);
@@ -54,8 +58,10 @@ export const getAllJournalEntries = async (req: Request, res: Response) => {
 export const updateJournalEntry = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, content, category, date } = req.body;
+
   try {
     const journalEntry = await JournalEntry.findById(Number(id));
+
     if (journalEntry && journalEntry.userId === req.user.userId) {
       const updatedJournalEntry = await JournalEntry.update(
         Number(id),
@@ -78,20 +84,20 @@ export const updateJournalEntry = async (req: Request, res: Response) => {
 // deleting an entry method
 export const deleteJournalEntry = async (req: Request, res: Response) => {
   const { id } = req.params;
+
   try {
     const journalEntry = await JournalEntry.findById(Number(id));
 
-    if (journalEntry && journalEntry.userId === req.user.userId) {
-      await JournalEntry.delete(Number(id));
-      console.log("kjhg");
-      res.status(204).json("Item Deleted");
-    } else {
-      res
+    if (!journalEntry || journalEntry.userId !== req.user.userId) {
+      return res
         .status(404)
         .json({ error: "Journal entry not found or you do not have access" });
     }
+
+    await JournalEntry.delete(Number(id));
+    res.status(204).json({ message: "Journal entry deleted successfully" });
   } catch (error) {
-    console.error("Error deleting journal entry:", error);
+    console.error("Failed to delete journal entry:", error);
     res.status(500).json({ error: "Failed to delete journal entry" });
   }
 };
