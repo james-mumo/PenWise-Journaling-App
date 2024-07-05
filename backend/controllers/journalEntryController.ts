@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
 import JournalEntry from "../models/JournalEntry";
 
-// creating a journal entry
+// Creating a journal entry
 export const createJournalEntry = async (req: Request, res: Response) => {
-  const { title, content, category, date } = req.body;
+  const { title, content, categoryId, date } = req.body; // Change 'category' to 'categoryId'
   const userId = req.user.userId;
 
   try {
     const newJournalEntry = await JournalEntry.create(
       title,
       content,
-      category,
+      categoryId,
       new Date(date),
       userId
     );
@@ -21,7 +21,7 @@ export const createJournalEntry = async (req: Request, res: Response) => {
   }
 };
 
-// get a journal entry based on id
+// Get a journal entry based on id
 export const getJournalEntry = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -41,7 +41,7 @@ export const getJournalEntry = async (req: Request, res: Response) => {
   }
 };
 
-// get all journal entries for the current user
+// Get all journal entries for the current user
 export const getAllJournalEntries = async (req: Request, res: Response) => {
   const userId = req.user.userId;
 
@@ -54,10 +54,10 @@ export const getAllJournalEntries = async (req: Request, res: Response) => {
   }
 };
 
-// updating a specific journal entry based on id
+// Updating a specific journal entry based on id
 export const updateJournalEntry = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { title, content, category, date } = req.body;
+  const { title, content, categoryId, date } = req.body; // Change 'category' to 'categoryId'
 
   try {
     const journalEntry = await JournalEntry.findById(Number(id));
@@ -67,7 +67,7 @@ export const updateJournalEntry = async (req: Request, res: Response) => {
         Number(id),
         title,
         content,
-        category,
+        categoryId, // Pass categoryId instead of category
         new Date(date)
       );
       res.status(200).json(updatedJournalEntry);
@@ -81,7 +81,7 @@ export const updateJournalEntry = async (req: Request, res: Response) => {
   }
 };
 
-// deleting a journal entry
+// Deleting a journal entry
 export const deleteJournalEntry = async (req: Request, res: Response) => {
   const { id } = req.params;
 

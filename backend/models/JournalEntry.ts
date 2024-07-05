@@ -5,7 +5,7 @@ class JournalEntry {
     public id: number,
     public title: string,
     public content: string,
-    public category: string,
+    public categoryId: string,
     public date: Date,
     public userId: number
   ) {}
@@ -14,19 +14,19 @@ class JournalEntry {
   static async create(
     title: string,
     content: string,
-    category: string,
+    categoryId: string, // Change 'category' to 'categoryId'
     date: Date,
     userId: number
   ): Promise<JournalEntry> {
     const result = await pool.query(
-      "INSERT INTO journal_entries (title, content, category, date, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [title, content, category, date, userId]
+      "INSERT INTO journal_entries (title, content, category_id, date, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [title, content, categoryId, date, userId]
     );
     const {
       id,
       title: dbTitle,
       content: dbContent,
-      category: dbCategory,
+      category_id: dbCategoryId, // Use 'category_id' from database
       date: dbDate,
       user_id: dbUserId,
     } = result.rows[0];
@@ -35,7 +35,7 @@ class JournalEntry {
       id,
       dbTitle,
       dbContent,
-      dbCategory,
+      dbCategoryId,
       dbDate,
       dbUserId
     );
@@ -56,25 +56,24 @@ class JournalEntry {
     return null;
   }
 
-  //   updating joirnal entry method
-
+  // Updating journal entry method
   static async update(
     id: number,
     title: string,
     content: string,
-    category: string,
+    categoryId: string, // Change 'category' to 'categoryId'
     date: Date
   ): Promise<JournalEntry> {
     const result = await pool.query(
-      "UPDATE journal_entries SET title = $1, content = $2, category = $3, date = $4 WHERE id = $5 RETURNING *",
-      [title, content, category, date, id]
+      "UPDATE journal_entries SET title = $1, content = $2, category_id = $3, date = $4 WHERE id = $5 RETURNING *",
+      [title, content, categoryId, date, id]
     );
 
     const {
       id: dbId,
       title: dbTitle,
       content: dbContent,
-      category: dbCategory,
+      category_id: dbCategoryId, // Use 'category_id' from database
       date: dbDate,
       user_id: dbUserId,
     } = result.rows[0];
@@ -83,7 +82,7 @@ class JournalEntry {
       dbId,
       dbTitle,
       dbContent,
-      dbCategory,
+      dbCategoryId,
       dbDate,
       dbUserId
     );
