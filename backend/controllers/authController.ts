@@ -11,7 +11,7 @@ export const register = async (req: Request, res: Response) => {
     const { username, password } = req.body;
     const user = await User.create(username, password);
     res.status(201).send({ msg: "User Registered!", user });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error registering new user: ", error);
     res.status(500).send("Failed to register user");
   }
@@ -22,7 +22,6 @@ export const login = async (req: Request, res: Response) => {
     const { username, password } = req.body;
     const user = await User.findByUsername(username);
 
-    // if user not found or password doesn't match
     if (!user || !(await user.verifyPassword(password))) {
       return res.status(401).send("Invalid Credentials");
     }
@@ -30,13 +29,9 @@ export const login = async (req: Request, res: Response) => {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshAccessToken(user);
 
-    // Store the refreshToken securely (e.g., database or memory) for token refreshing
-    // In this example, we store it in an array (not recommended for production)
     refreshTokens.push(refreshToken);
     res.json({ accessToken, refreshToken });
-
-    //
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error logging in user:", error);
     res.status(500).send("Login Failed!");
   }
@@ -60,7 +55,7 @@ export const token = async (req: Request, res: Response) => {
         res.json({ accessToken });
       }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error refreshing token:", error);
     res.status(500).send("Token refresh failed");
   }
