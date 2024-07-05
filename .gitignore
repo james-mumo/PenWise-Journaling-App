@@ -1,16 +1,18 @@
 # mobile app files
 
-mobile_app/node_modules/
-mobile_app/.expo/
-mobile_app/dist/
-mobile_app/npm-debug.*
-mobile_app/*.jks
-mobile_app/*.p8
-mobile_app/*.p12
-mobile_app/*.key
-mobile_app/*.mobileprovision
-mobile_app/*.orig.*
-mobile_app/web-build/
+frontend/node_modules/
+frontend/.expo/
+frontend/dist/
+frontend/npm-debug.*
+frontend/*.jks
+frontend/*.p8
+frontend/*.p12
+frontend/*.key
+frontend/*.mobileprovision
+frontend/*.orig.*
+frontend/web-build/
+frontend/delete_me.md
+frontend/app-example
 
 # backend files
 
@@ -19,6 +21,8 @@ backend/.env
 backend/build
 backend/ex.ts
 backend/dist
+backend/delete_me.md
+backend/ToDo.md
 
 # macOS
-mobile_app/.DS_Store
+frontend/.DS_Store
