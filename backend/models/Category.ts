@@ -5,7 +5,6 @@ class Category {
     public id: number,
     public name: string,
     public color: string,
-    public icon: string,
     public userId: number,
     public isEditable: boolean
   ) {}
@@ -13,24 +12,22 @@ class Category {
   static async create(
     name: string,
     color: string,
-    icon: string,
     userId: number,
     isEditable: boolean
   ): Promise<Category> {
     const result = await pool.query(
-      "INSERT INTO categories (name, color, icon, user_id, is_editable) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [name, color, icon, userId, isEditable]
+      "INSERT INTO categories (name, color, user_id, is_editable) VALUES ($1, $2, $3, $4) RETURNING *",
+      [name, color, userId, isEditable]
     );
 
     const {
       id,
       name: dbName,
       color: dbColor,
-      icon: dbIcon,
       user_id: dbUserId,
       is_editable: dbIsEditable,
     } = result.rows[0];
-    return new Category(id, dbName, dbColor, dbIcon, dbUserId, dbIsEditable);
+    return new Category(id, dbName, dbColor, dbUserId, dbIsEditable);
   }
 
   static async findById(id: number): Promise<Category | null> {
@@ -39,8 +36,8 @@ class Category {
     ]);
 
     if (result.rows.length > 0) {
-      const { id, name, color, icon, user_id, is_editable } = result.rows[0];
-      return new Category(id, name, color, icon, user_id, is_editable);
+      const { id, name, color, user_id, is_editable } = result.rows[0];
+      return new Category(id, name, color, user_id, is_editable);
     }
     return null;
   }
@@ -49,23 +46,21 @@ class Category {
     id: number,
     name: string,
     color: string,
-    icon: string,
     isEditable: boolean
   ): Promise<Category> {
     const result = await pool.query(
-      "UPDATE categories SET name = $1, color = $2, icon = $3, is_editable = $4 WHERE id = $5 RETURNING *",
-      [name, color, icon, isEditable, id]
+      "UPDATE categories SET name = $1, color = $2, is_editable = $3 WHERE id = $4 RETURNING *",
+      [name, color, isEditable, id]
     );
 
     const {
       id: dbId,
       name: dbName,
       color: dbColor,
-      icon: dbIcon,
       is_editable: dbIsEditable,
       user_id: dbUserId,
     } = result.rows[0];
-    return new Category(dbId, dbName, dbColor, dbIcon, dbUserId, dbIsEditable);
+    return new Category(dbId, dbName, dbColor, dbUserId, dbIsEditable);
   }
 
   static async delete(id: number): Promise<void> {
@@ -79,9 +74,29 @@ class Category {
     );
 
     return result.rows.map((row) => {
-      const { id, name, color, icon, user_id, is_editable } = row;
-      return new Category(id, name, color, icon, user_id, is_editable);
+      const { id, name, color, user_id, is_editable } = row;
+      return new Category(id, name, color, user_id, is_editable);
     });
+  }
+
+  static async getCategoriesWithEntryCount(userId: number): Promise<any[]> {
+    const result = await pool.query(
+      "SELECT c.id, c.name, c.color, c.user_id, c.is_editable, COUNT(j.id) AS entry_count " +
+        "FROM categories c " +
+        "LEFT JOIN journal_entries j ON c.id = j.category_id AND j.user_id = $1 " +
+        "WHERE c.user_id = $1 " +
+        "GROUP BY c.id",
+      [userId]
+    );
+
+    return result.rows.map((row) => ({
+      id: row.id,
+      name: row.name,
+      color: row.color,
+      userId: row.user_id,
+      isEditable: row.is_editable,
+      entryCount: parseInt(row.entry_count) || 0,
+    }));
   }
 }
 

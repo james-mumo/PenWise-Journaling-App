@@ -8,9 +8,16 @@ let refreshTokens: string[] = [];
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { username, password } = req.body;
-    const user = await User.create(username, password);
-    res.status(201).send({ msg: "User Registered!", user });
+    const { username, email, password } = req.body;
+    const user = await User.create(username, email, password);
+
+    // Generate tokens
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshAccessToken(user);
+    refreshTokens.push(refreshToken);
+
+    // Send response with tokens and user data
+    res.status(201).json({ accessToken, refreshToken, user });
   } catch (error: any) {
     console.error("Error registering new user: ", error);
     res.status(500).send("Failed to register user");
@@ -19,8 +26,8 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   try {
-    const { username, password } = req.body;
-    const user = await User.findByUsername(username);
+    const { email, password } = req.body;
+    const user = await User.findByEmail(email);
 
     if (!user || !(await user.verifyPassword(password))) {
       return res.status(401).send("Invalid Credentials");
@@ -58,5 +65,20 @@ export const token = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error("Error refreshing token:", error);
     res.status(500).send("Token refresh failed");
+  }
+};
+export const getDetails = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    res.status(500).send("Failed to fetch user details");
   }
 };

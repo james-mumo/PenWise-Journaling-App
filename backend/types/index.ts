@@ -8,7 +8,6 @@ export interface CategoryInterface {
   id: number;
   name: string;
   color: string;
-  icon: string;
   userId: number;
   isEditable: boolean;
 }

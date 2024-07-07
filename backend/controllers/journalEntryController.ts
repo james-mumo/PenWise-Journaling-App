@@ -3,14 +3,14 @@ import JournalEntry from "../models/JournalEntry";
 
 // Creating a journal entry
 export const createJournalEntry = async (req: Request, res: Response) => {
-  const { title, content, categoryId, date } = req.body; // Change 'category' to 'categoryId'
+  const { title, content, category_id, date } = req.body; // Change 'category' to 'categoryId'
   const userId = req.user.userId;
-
+  console.log(req.body);
   try {
     const newJournalEntry = await JournalEntry.create(
       title,
       content,
-      categoryId,
+      category_id,
       new Date(date),
       userId
     );
@@ -53,14 +53,18 @@ export const getAllJournalEntries = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to fetch journal entries" });
   }
 };
-
 // Updating a specific journal entry based on id
 export const updateJournalEntry = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { title, content, categoryId, date } = req.body; // Change 'category' to 'categoryId'
+  const { title, content, categoryId, date } = req.body;
+
+  console.log("Request params:", req.params);
+  console.log("Request body:", req.body);
+  console.log("Authenticated user:", req.user);
 
   try {
     const journalEntry = await JournalEntry.findById(Number(id));
+    console.log("Found journal entry:", journalEntry);
 
     if (journalEntry && journalEntry.userId === req.user.userId) {
       const updatedJournalEntry = await JournalEntry.update(
@@ -77,7 +81,10 @@ export const updateJournalEntry = async (req: Request, res: Response) => {
         .json({ error: "Journal entry not found or you do not have access" });
     }
   } catch (error) {
-    res.status(500).json({ error: "Failed to update journal entry" });
+    console.error("Error during journal entry update:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to update journal entry", err: error });
   }
 };
 
@@ -101,3 +108,5 @@ export const deleteJournalEntry = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to delete journal entry" });
   }
 };
+
+

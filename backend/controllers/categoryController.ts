@@ -3,14 +3,13 @@ import Category from "../models/Category";
 import { CategoryInterface } from "../types/index";
 
 export const createCategory = async (req: Request, res: Response) => {
-  const { name, color, icon, isEditable }: CategoryInterface = req.body;
+  const { name, color, isEditable }: CategoryInterface = req.body;
   const userId = req.user.userId;
 
   try {
     const category: CategoryInterface = await Category.create(
       name,
       color,
-      icon,
       userId,
       isEditable
     );
@@ -37,16 +36,13 @@ export const getCategoryById = async (req: Request, res: Response) => {
 
 export const updateCategory = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
-  const { name, color, icon, isEditable }: Partial<CategoryInterface> =
-    req.body;
+  const { name, color, isEditable }: Partial<CategoryInterface> = req.body;
 
   if (
     !name ||
     typeof name !== "string" ||
     !color ||
     typeof color !== "string" ||
-    !icon ||
-    typeof icon !== "string" ||
     isEditable === undefined
   ) {
     return res
@@ -59,7 +55,6 @@ export const updateCategory = async (req: Request, res: Response) => {
       id,
       name,
       color,
-      icon,
       isEditable
     );
     if (updatedCategory) {
@@ -83,11 +78,33 @@ export const deleteCategory = async (req: Request, res: Response) => {
 };
 
 export const getAllCategoriesByUserId = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.userId);
+  const userId = req.user?.userId;
+
+  if (!userId) {
+    return res.status(401).json({ message: "User id not found in token" });
+  }
+
   try {
     const categories: CategoryInterface[] = await Category.findAllByUserId(
       userId
     );
+    res.json(categories);
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const getAllCategoriesByUserIdCount = async (
+  req: Request,
+  res: Response
+) => {
+  const userId = req.user?.userId;
+  if (!userId) {
+    return res.status(401).json({ message: "User id not found in token" });
+  }
+
+  try {
+    const categories = await Category.getCategoriesWithEntryCount(userId);
     res.json(categories);
   } catch (err: any) {
     res.status(500).json({ message: err.message });

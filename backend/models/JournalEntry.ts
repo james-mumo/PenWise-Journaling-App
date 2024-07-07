@@ -5,7 +5,7 @@ class JournalEntry {
     public id: number,
     public title: string,
     public content: string,
-    public categoryId: string,
+    public category_id: string,
     public date: Date,
     public userId: number
   ) {}
@@ -14,13 +14,13 @@ class JournalEntry {
   static async create(
     title: string,
     content: string,
-    categoryId: string, // Change 'category' to 'categoryId'
+    category_id: string, // Change 'category' to 'categoryId'
     date: Date,
     userId: number
   ): Promise<JournalEntry> {
     const result = await pool.query(
       "INSERT INTO journal_entries (title, content, category_id, date, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [title, content, categoryId, date, userId]
+      [title, content, category_id, date, userId]
     );
     const {
       id,
@@ -95,16 +95,25 @@ class JournalEntry {
   }
 
   // find all entries for a specific user method
-  static async findAllByUserId(userId: number): Promise<JournalEntry[]> {
+  static async findAllByUserId(userId: number): Promise<any[]> {
     const result = await pool.query(
-      "SELECT * FROM journal_entries WHERE user_id = $1",
+      "SELECT j.id, j.title, j.content, j.category_id, j.date, j.user_id, c.name AS category_name, c.color AS category_color " +
+        "FROM journal_entries j " +
+        "LEFT JOIN categories c ON j.category_id = c.id " +
+        "WHERE j.user_id = $1",
       [userId]
     );
 
-    return result.rows.map((row) => {
-      const { id, title, content, category, date, user_id } = row;
-      return new JournalEntry(id, title, content, category, date, user_id);
-    });
+    return result.rows.map((row) => ({
+      id: row.id,
+      title: row.title,
+      content: row.content,
+      category_id: row.category_id,
+      date: row.date,
+      userId: row.user_id,
+      categoryName: row.category_name,
+      categoryColor: row.category_color,
+    }));
   }
 }
 

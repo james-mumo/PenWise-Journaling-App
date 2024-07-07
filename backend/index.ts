@@ -4,9 +4,12 @@ import journalEntryRoutes from "./routes/journalEntryRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
 import * as dotenv from "dotenv";
 import { initDb } from "./config/database";
+import cors from "cors";
 
 dotenv.config();
 const app = express();
+
+app.use(cors({ origin: true, credentials: true }));
 
 app.use(express.json());
 app.use("/api/auth", authRoutes);
