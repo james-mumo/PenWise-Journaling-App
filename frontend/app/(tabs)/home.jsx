@@ -9,11 +9,15 @@ import { useGlobalContext } from "../../context/GlobalProvider";
 import { getAllJournalEntriesByUser } from "../../lib/appwrite";
 import JournalEntryCard from "../../components/JournalEntryCard";
 import { BASE_URL } from "../../context/GlobalProvider";
+import { useFormattedDate, useCurrentTime } from "../../hooks/useDateTime.jsx";
 
 const Home = () => {
   const { user } = useGlobalContext();
   const [journalEntries, setJournalEntries] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+
+  const formattedDate = useFormattedDate();
+  const currentTime = useCurrentTime();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -55,7 +59,7 @@ const Home = () => {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#141414" }}>
+    <SafeAreaView className="flex bg-gray-900">
       <FlatList
         data={journalEntries}
         keyExtractor={(item) => item.id.toString()}
@@ -66,10 +70,13 @@ const Home = () => {
             content={item.content}
             date={item.date}
             userId={item.userId}
+            icon={images.pentagon}
+            category={item.categoryName}
+            categoryColor={item.categoryColor}
           />
         )}
         ListHeaderComponent={() => (
-          <View className="my-2 px-5">
+          <View className="my-2 mt-5 px-5">
             <View
               style={{
                 flexDirection: "row",
@@ -96,6 +103,26 @@ const Home = () => {
               />
             </View>
             <SearchInput />
+            <View className="mt-2 flex flex-1 flex-row border border-yellow-500 bg-gray-800 rounded-md ">
+              <View className="bg-yellow-400 p-2"></View>
+              <Image
+                source={images.logoSmall}
+                className="h-20 w-20 my-2"
+                resizeMode="contain"
+              />
+              <View className="flex flex-col ml-3 items-end flex-1 justify-center">
+                <Text className="font-psemibold text-yellow-400 text-xl">
+                  {formattedDate}
+                </Text>
+                <Text className="font-psemibold text-yellow-400 text-xl">
+                  {currentTime}
+                </Text>
+                <Text className="font-psemibold text-yellow-200 text-[11px]">
+                  {journalEntries?.length > 0 ? journalEntries?.length : 0}{" "}
+                  Entries
+                </Text>
+              </View>
+            </View>
             <View className="mt-2">
               <Text
                 style={{

@@ -5,6 +5,7 @@ import { icons } from "../../constants";
 import { Loader } from "../../components";
 import { useGlobalContext } from "../../context/GlobalProvider";
 
+// tab ion for the base routing
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
     <View className="flex items-center justify-center gap-2">
@@ -24,6 +25,8 @@ const TabIcon = ({ icon, color, name, focused }) => {
   );
 };
 
+
+// layout of the bottom navigation tabs
 const TabLayout = () => {
   const { loading, isLogged } = useGlobalContext();
 
