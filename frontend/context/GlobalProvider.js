@@ -1,33 +1,54 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
-import { getCurrentUser } from "../lib/appwrite";
+export const BASE_URL = "https://abce-196-216-86-89.ngrok-free.app/api";
 
 const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);
 
 const GlobalProvider = ({ children }) => {
   const [isLogged, setIsLogged] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null); // Initialize with null
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getCurrentUser()
-      .then((res) => {
-        if (res) {
+    const checkCurrentUser = async () => {
+      try {
+        const token = await AsyncStorage.getItem("accessToken");
+
+        if (token) {
+          const currentUser = await getCurrentUser(token);
           setIsLogged(true);
-          setUser(res);
+          setUser(currentUser);
         } else {
           setIsLogged(false);
           setUser(null);
         }
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
+      } catch (error) {
+        console.error("Error checking current user:", error);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    checkCurrentUser();
   }, []);
+
+  const getCurrentUser = async (token) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      throw new Error("Failed to fetch user details");
+    }
+  };
 
   return (
     <GlobalContext.Provider

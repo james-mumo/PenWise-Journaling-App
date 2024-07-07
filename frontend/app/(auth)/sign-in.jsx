@@ -19,20 +19,22 @@ const SignIn = () => {
   const submit = async () => {
     if (form.email === "" || form.password === "") {
       Alert.alert("Error", "Please fill in all fields");
+      return; // Exit early if fields are empty
     }
 
     setSubmitting(true);
 
     try {
-      await signIn(form.email, form.password);
+      await signIn(form.email, form.password); // Correct function call
       const result = await getCurrentUser();
       setUser(result);
       setIsLogged(true);
 
       Alert.alert("Success", "User signed in successfully");
       router.replace("/home");
+      
     } catch (error) {
-      Alert.alert("Error", error.message);
+      Alert.alert("Sign-In Error", error.message);
     } finally {
       setSubmitting(false);
     }

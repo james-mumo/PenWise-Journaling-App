@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
 
 import { images } from "../../constants";
-import { createUser } from "../../lib/appwrite";
+import { registerUser, loginUser, signIn } from "../../lib/appwrite";
 import { CustomButton, FormField } from "../../components";
 import { useGlobalContext } from "../../context/GlobalProvider";
 
@@ -21,17 +21,28 @@ const SignUp = () => {
   const submit = async () => {
     if (form.username === "" || form.email === "" || form.password === "") {
       Alert.alert("Error", "Please fill in all fields");
+      return;
     }
 
     setSubmitting(true);
     try {
-      const result = await createUser(form.email, form.password, form.username);
-      setUser(result);
+      // Register the user
+      const registerResult = await registerUser(
+        form.email,
+        form.username,
+        form.password
+      );
+      console.log(registerResult);
+      // If registration succeeds, automatically log in the user
+      const loginResult = await signIn(form.email, form.password);
+      setUser(loginResult);
       setIsLogged(true);
-
+      console.log(loginResult);
+      // Navigate to home screen or desired destination
       router.replace("/home");
     } catch (error) {
-      Alert.alert("Error", error.message);
+      console.log(error);
+      Alert.alert("Signup-Error", error.message);
     } finally {
       setSubmitting(false);
     }

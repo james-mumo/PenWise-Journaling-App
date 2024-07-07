@@ -12,7 +12,8 @@ const useAppwrite = (fn) => {
       const res = await fn();
       setData(res);
     } catch (error) {
-      Alert.alert("Error", error.message);
+      console.log({ msg: "Datafetch-error", error });
+      Alert.alert("DataFetch-Error", error.message);
     } finally {
       setLoading(false);
     }
