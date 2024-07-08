@@ -1,9 +1,8 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BASE_URL } from "../context/GlobalProvider";
-// url pointing to the backend server
 
-// all categories user has create
+// all categories user has created
 export const getAllCategoriesEntriesByUser = async () => {
   try {
     const token = await AsyncStorage.getItem("accessToken");
@@ -28,7 +27,35 @@ export const getAllCategoriesEntriesByUser = async () => {
   }
 };
 
-// Define the getAllJournalEntriesByUser function
+// function to get total journal entries created by user per category
+export const getAllCategoriesEntriesByUserTotalCount = async () => {
+  try {
+    const token = await AsyncStorage.getItem("accessToken");
+
+    if (!token) {
+      throw new Error("User token not found");
+    }
+
+    const response = await axios.get(
+      `${BASE_URL}/category-entries/count/each`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw new Error(
+      error.response?.data?.message ||
+        error.message ||
+        "Failed to fetch categories"
+    );
+  }
+};
+
+// getAllJournalEntriesByUser function
 export const getAllJournalEntriesByUser = async () => {
   try {
     const token = await AsyncStorage.getItem("refreshToken");
@@ -54,6 +81,7 @@ export const getAllJournalEntriesByUser = async () => {
   }
 };
 
+// function to sign in a user
 export const signIn = async (email, password) => {
   try {
     const response = await axios.post(`${BASE_URL}/auth/login`, {
@@ -63,7 +91,6 @@ export const signIn = async (email, password) => {
 
     const { accessToken, refreshToken } = response.data;
 
-    // tokens securely in AsyncStorage
     await AsyncStorage.setItem("accessToken", accessToken);
     await AsyncStorage.setItem("refreshToken", refreshToken);
 
@@ -83,7 +110,6 @@ export const registerUser = async (email, username, password) => {
       password,
     });
 
-    // Check if response.data exists before accessing properties
     if (response && response.data) {
       return response.data;
     } else {
@@ -97,6 +123,7 @@ export const registerUser = async (email, username, password) => {
   }
 };
 
+// get the logged-in use details
 export const getCurrentUser = async () => {
   try {
     const token = await AsyncStorage.getItem("accessToken");
@@ -117,6 +144,7 @@ export const getCurrentUser = async () => {
   }
 };
 
+// function for loggin out a user
 export const signOut = async () => {
   try {
     await AsyncStorage.removeItem("accessToken");
@@ -126,6 +154,7 @@ export const signOut = async () => {
   }
 };
 
+// seaching for a specific journal entry based on a search term {not implemented in the backend yet }
 export const searchJournalEntries = async (query) => {
   try {
     const token = await AsyncStorage.getItem("accessToken");
@@ -154,6 +183,7 @@ export const searchJournalEntries = async (query) => {
   }
 };
 
+// creating a new journal entry
 export const createJournalEntry = async (journalEntryData) => {
   try {
     const token = await AsyncStorage.getItem("accessToken");
@@ -183,6 +213,7 @@ export const createJournalEntry = async (journalEntryData) => {
   }
 };
 
+// creating a new journal category
 export const createCategory = async (categoryData) => {
   try {
     const token = await AsyncStorage.getItem("accessToken");
@@ -212,6 +243,7 @@ export const createCategory = async (categoryData) => {
   }
 };
 
+// deeting a journal entry
 export const deleteJournalEntry = async (entryId) => {
   try {
     const token = await AsyncStorage.getItem("accessToken");
@@ -264,6 +296,46 @@ export const updateJournalEntry = async (entryId, updatedData) => {
       error.response?.data?.message ||
         error.message ||
         "Failed to update journal entry"
+    );
+  }
+};
+
+// updating loggedin user details
+export const updateUserDetails = async (
+  currentPassword,
+  newPassword,
+  email,
+  username
+) => {
+  try {
+    const token = await AsyncStorage.getItem("accessToken");
+
+    if (!token) {
+      throw new Error("User token not found");
+    }
+
+    const response = await axios.put(
+      `${BASE_URL}/auth/update`,
+      {
+        currentPassword,
+        newPassword,
+        email,
+        username,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user details:", error);
+    throw new Error(
+      error.response?.data?.message ||
+        error.message ||
+        "Failed to update user details"
     );
   }
 };

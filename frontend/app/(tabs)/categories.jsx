@@ -6,34 +6,37 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-  TextInput,
 } from "react-native";
 import { images, icons } from "../../constants";
 import CategoryCard from "../../components/CategoryCard";
 import { getAllCategoriesEntriesByUserTotalCount } from "../../lib/appwrite";
 import useAppwrite from "../../lib/useAppwrite";
 import AddCategoryModal from "../../components/AddCategoryModal";
-import { SearchInput } from "../../components";
+import { EmptyState, SearchInput } from "../../components";
 
 const CategoriesScreen = () => {
-  const {
-    data: categories,
-    refetch,
-    loading,
-    error,
-  } = useAppwrite(() => getAllCategoriesEntriesByUserTotalCount());
-
+  const { data: categoriesFetched } = useAppwrite(() =>
+    getAllCategoriesEntriesByUserTotalCount()
+  );
+  const [categories, setCategories] = useState(categoriesFetched);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // useEffect(() => {
-  //   const fetchCategories = async () => {
-  //     await refetch();
-  //   };
+  useEffect(() => {
+    if (categoriesFetched) {
+      setCategories(categoriesFetched);
+    }
+  }, [categoriesFetched]);
 
-  //   if (modalVisible) {
-  //     fetchCategories();
-  //   }
-  // }, [modalVisible, refetch]);
+  const fetchAllCategories = async () => {
+    const getCategories = await getAllCategoriesEntriesByUserTotalCount();
+    setCategories(getCategories);
+  };
+
+  // function for fetching any changes if modal closes
+  const handleModalClose = () => {
+    setModalVisible(false);
+    fetchAllCategories();
+  };
 
   const renderCategory = ({ item }) => (
     <TouchableOpacity>
@@ -88,11 +91,14 @@ const CategoriesScreen = () => {
             </View>
           </View>
         )}
+        ListEmptyComponent={() => (
+          <EmptyState
+            title="No Categories Found"
+            subtitle="No journal categories available"
+          />
+        )}
       />
-      <AddCategoryModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-      />
+      <AddCategoryModal visible={modalVisible} onClose={handleModalClose} />
     </SafeAreaView>
   );
 };
