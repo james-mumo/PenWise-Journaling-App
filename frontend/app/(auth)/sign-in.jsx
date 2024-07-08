@@ -19,13 +19,13 @@ const SignIn = () => {
   const submit = async () => {
     if (form.email === "" || form.password === "") {
       Alert.alert("Error", "Please fill in all fields");
-      return; // Exit early if fields are empty
+      return; 
     }
 
     setSubmitting(true);
 
     try {
-      await signIn(form.email, form.password); // Correct function call
+      await signIn(form.email, form.password); 
       const result = await getCurrentUser();
       setUser(result);
       setIsLogged(true);

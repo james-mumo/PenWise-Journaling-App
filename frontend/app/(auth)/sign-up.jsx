@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
 
 import { images } from "../../constants";
-import { registerUser, loginUser, signIn } from "../../lib/appwrite";
+import { registerUser, signIn } from "../../lib/appwrite";
 import { CustomButton, FormField } from "../../components";
 import { useGlobalContext } from "../../context/GlobalProvider";
 
@@ -26,19 +26,16 @@ const SignUp = () => {
 
     setSubmitting(true);
     try {
-      // Register the user
       const registerResult = await registerUser(
         form.email,
         form.username,
         form.password
       );
       console.log(registerResult);
-      // If registration succeeds, automatically log in the user
       const loginResult = await signIn(form.email, form.password);
       setUser(loginResult);
       setIsLogged(true);
       console.log(loginResult);
-      // Navigate to home screen or desired destination
       router.replace("/home");
     } catch (error) {
       console.log(error);
