@@ -9,31 +9,31 @@ This project is the backend for the PenWise Journaling App. It handles user auth
 The backend project is organized into several folders and files, each serving a specific purpose. Below is the file tree representation of the project:
 
 ```bash
-/backend
+/backend/
 ├── README.md
 ├── config
 │   └── database.ts
 ├── controllers
 │   ├── authController.ts
 │   └── journalEntryController.ts
-├── dist
-├── ex.ts
 ├── index.ts
 ├── init.sql
 ├── middlewares
 │   └── authMiddleware.ts
 ├── models
+│   ├── Category.ts
 │   ├── JournalEntry.ts
 │   └── User.ts
-├── node_modules
 ├── package-lock.json
 ├── package.json
 ├── routes
 │   ├── auth.ts
+│   └── categoryRoutes.ts
 │   └── journalEntryRoutes.ts
 ├── tsconfig.json
 └── utils
     └── jwt.ts
+
 
 ```
 

@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-export const BASE_URL = "https://143e-196-216-86-89.ngrok-free.app/api";
+export const BASE_URL = "https://2a6d-196-216-86-89.ngrok-free.app/api";
 
 const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);
