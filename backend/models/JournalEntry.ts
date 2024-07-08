@@ -10,11 +10,11 @@ class JournalEntry {
     public userId: number
   ) {}
 
-  //   creating new journal entry method
+  //   method creates a new journal entry
   static async create(
     title: string,
     content: string,
-    category_id: string, // Change 'category' to 'categoryId'
+    category_id: string,
     date: Date,
     userId: number
   ): Promise<JournalEntry> {
@@ -26,7 +26,7 @@ class JournalEntry {
       id,
       title: dbTitle,
       content: dbContent,
-      category_id: dbCategoryId, // Use 'category_id' from database
+      category_id: dbCategoryId,
       date: dbDate,
       user_id: dbUserId,
     } = result.rows[0];
@@ -41,8 +41,7 @@ class JournalEntry {
     );
   }
 
-  //   find entry by id method
-
+  //  method finds a jounral entry by id
   static async findById(id: number): Promise<JournalEntry | null> {
     const result = await pool.query(
       "SELECT * FROM journal_entries WHERE id = $1",
@@ -56,12 +55,12 @@ class JournalEntry {
     return null;
   }
 
-  // Updating journal entry method
+  // methods updates journal entry
   static async update(
     id: number,
     title: string,
     content: string,
-    categoryId: string, // Change 'category' to 'categoryId'
+    categoryId: string,
     date: Date
   ): Promise<JournalEntry> {
     const result = await pool.query(
@@ -73,7 +72,7 @@ class JournalEntry {
       id: dbId,
       title: dbTitle,
       content: dbContent,
-      category_id: dbCategoryId, // Use 'category_id' from database
+      category_id: dbCategoryId,
       date: dbDate,
       user_id: dbUserId,
     } = result.rows[0];
@@ -88,13 +87,13 @@ class JournalEntry {
     );
   }
 
-  //   method for delting a journal entry
+  //   method deletes a journal entry
 
   static async delete(id: number): Promise<void> {
     await pool.query("DELETE FROM journal_entries WHERE id = $1", [id]);
   }
 
-  // find all entries for a specific user method
+  // method find all entries for a specific user basmethoded on the user id
   static async findAllByUserId(userId: number): Promise<any[]> {
     const result = await pool.query(
       "SELECT j.id, j.title, j.content, j.category_id, j.date, j.user_id, c.name AS category_name, c.color AS category_color " +

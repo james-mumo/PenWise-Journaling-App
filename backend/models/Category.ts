@@ -9,6 +9,7 @@ class Category {
     public isEditable: boolean
   ) {}
 
+  // method to create a new category in the database and returns the created Category object.
   static async create(
     name: string,
     color: string,
@@ -30,6 +31,7 @@ class Category {
     return new Category(id, dbName, dbColor, dbUserId, dbIsEditable);
   }
 
+  // method to find a category by its ID in the database and returns the Category object if found, otherwise returns null.
   static async findById(id: number): Promise<Category | null> {
     const result = await pool.query("SELECT * FROM categories WHERE id = $1", [
       id,
@@ -42,6 +44,7 @@ class Category {
     return null;
   }
 
+  // method to update an existing category in the database and returns the updated Category object.
   static async update(
     id: number,
     name: string,
@@ -63,10 +66,12 @@ class Category {
     return new Category(dbId, dbName, dbColor, dbUserId, dbIsEditable);
   }
 
+  // method of deleting a category entry based on id
   static async delete(id: number): Promise<void> {
     await pool.query("DELETE FROM categories WHERE id = $1", [id]);
   }
 
+  // elonging to a specific user in the database
   static async findAllByUserId(userId: number): Promise<Category[]> {
     const result = await pool.query(
       "SELECT * FROM categories WHERE user_id = $1",
@@ -79,6 +84,7 @@ class Category {
     });
   }
 
+  // Retrieves categories with the count of associated journal entries for a specific user by use of an "inner join"
   static async getCategoriesWithEntryCount(userId: number): Promise<any[]> {
     const result = await pool.query(
       "SELECT c.id, c.name, c.color, c.user_id, c.is_editable, COUNT(j.id) AS entry_count " +
