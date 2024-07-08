@@ -10,6 +10,7 @@ import { authenticateToken } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
+// journal entry routes
 router.post("/", authenticateToken, createJournalEntry);
 router.get("/", authenticateToken, getAllJournalEntries);
 router.get("/:id", authenticateToken, getJournalEntry);

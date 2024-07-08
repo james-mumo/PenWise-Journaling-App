@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Category from "../models/Category";
 import { CategoryInterface } from "../types/index";
 
+// function to create a new category
 export const createCategory = async (req: Request, res: Response) => {
   const { name, color, isEditable }: CategoryInterface = req.body;
   const userId = req.user.userId;
@@ -20,6 +21,7 @@ export const createCategory = async (req: Request, res: Response) => {
   }
 };
 
+// function to get category based on the id
 export const getCategoryById = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   try {
@@ -34,6 +36,7 @@ export const getCategoryById = async (req: Request, res: Response) => {
   }
 };
 
+//  function to update a category
 export const updateCategory = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   const { name, color, isEditable }: Partial<CategoryInterface> = req.body;
@@ -67,6 +70,7 @@ export const updateCategory = async (req: Request, res: Response) => {
   }
 };
 
+//  function to delete a category
 export const deleteCategory = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   try {
@@ -77,6 +81,7 @@ export const deleteCategory = async (req: Request, res: Response) => {
   }
 };
 
+// function to get all categories based on id
 export const getAllCategoriesByUserId = async (req: Request, res: Response) => {
   const userId = req.user?.userId;
 
@@ -94,6 +99,7 @@ export const getAllCategoriesByUserId = async (req: Request, res: Response) => {
   }
 };
 
+// function to get all categories belonging to a user with their entry counts
 export const getAllCategoriesByUserIdCount = async (
   req: Request,
   res: Response

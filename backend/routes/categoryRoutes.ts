@@ -11,6 +11,7 @@ import { authenticateToken } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
+// jounal category routes
 router.post("/", authenticateToken, createCategory);
 router.get("/", authenticateToken, getAllCategoriesByUserId);
 router.get("/:id", authenticateToken, getCategoryById);

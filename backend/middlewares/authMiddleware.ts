@@ -3,10 +3,10 @@ import jwt from "jsonwebtoken";
 
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET!;
 
-// we create a typescript declaration to exetend the the Request interface so that we can add property or aleter the user object
+// a typescript declaration to exetend the the Request interface so that we can add property or aleter the user object
 declare module "express" {
   interface Request {
-    user?: any; // Adjust 'any' to match your user type if known
+    user?: any;
   }
 }
 
