@@ -31,11 +31,10 @@ const SignUp = () => {
         form.username,
         form.password
       );
-      console.log(registerResult);
+
       const loginResult = await signIn(form.email, form.password);
       setUser(loginResult);
       setIsLogged(true);
-      console.log(loginResult);
       router.replace("/home");
     } catch (error) {
       console.log(error);

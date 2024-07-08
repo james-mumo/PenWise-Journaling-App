@@ -13,7 +13,6 @@ const JournalEntryCard = ({
   icon,
 }) => {
   const { formatDate } = useDateFormatter();
-  console.log(category);
 
   return (
     <View

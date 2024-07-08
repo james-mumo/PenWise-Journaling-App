@@ -15,7 +15,6 @@ const JournalEntryModal = ({ visible, entry, closeModal }) => {
   const [editing, setEditing] = useState(false);
   const [updatedTitle, setUpdatedTitle] = useState(entry?.title);
   const [updatedContent, setUpdatedContent] = useState(entry?.content);
-  console.log(entry);
   const formattedDate = useDateFormatterToLocaleString();
 
   const clearState = () => {

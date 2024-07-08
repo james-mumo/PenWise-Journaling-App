@@ -103,7 +103,6 @@ export const signIn = async (email, password) => {
 // registering new user logic
 export const registerUser = async (email, username, password) => {
   try {
-    console.log(BASE_URL);
     const response = await axios.post(`${BASE_URL}/auth/register`, {
       email,
       username,

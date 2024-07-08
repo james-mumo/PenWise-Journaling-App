@@ -26,7 +26,6 @@ const AddCategoryModal = ({ visible, onClose }) => {
 
     try {
       await createCategory(newCategory);
-      console.log(newCategory);
       Alert.alert("Success", "New category added successfully");
       onClose();
     } catch (error) {
