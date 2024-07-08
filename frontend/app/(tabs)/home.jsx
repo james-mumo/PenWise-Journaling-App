@@ -4,9 +4,8 @@ import { FlatList, Image, RefreshControl, Text, View } from "react-native";
 import { images, icons } from "../../constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { EmptyState, SearchInput, Trending } from "../../components";
+import { EmptyState, SearchInput } from "../../components";
 import { useGlobalContext } from "../../context/GlobalProvider";
-import { getAllJournalEntriesByUser } from "../../lib/appwrite";
 import JournalEntryCard from "../../components/JournalEntryCard";
 import { BASE_URL } from "../../context/GlobalProvider";
 import { useFormattedDate, useCurrentTime } from "../../hooks/useDateTime.jsx";
@@ -19,12 +18,14 @@ const Home = () => {
   const formattedDate = useFormattedDate();
   const currentTime = useCurrentTime();
 
+  // refresh function for the flat-list
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchJournalEntries();
     setRefreshing(false);
   };
 
+  // custom greeting text function depending on time
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) {
@@ -35,6 +36,8 @@ const Home = () => {
       return "Good Evening";
     }
   };
+
+  // Function fetches all journal entries based on the page load initiated by useEffect
   const fetchJournalEntries = async () => {
     try {
       const token = await AsyncStorage.getItem("accessToken");

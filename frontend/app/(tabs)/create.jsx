@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images, icons } from "../../constants";
@@ -14,16 +14,23 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as DocumentPicker from "expo-document-picker";
 
-import useCategories from "../../hooks/useCategories";
-
 import { CustomButton, FormField } from "../../components";
 import { useGlobalContext } from "../../context/GlobalProvider";
-import { createJournalEntry } from "../../lib/appwrite";
+import {
+  createJournalEntry,
+  getAllCategoriesEntriesByUser,
+} from "../../lib/appwrite";
 import FormContentField from "../../components/FormContentField";
+import useAppwrite from "../../lib/useAppwrite";
 
 const Categories = () => {
   const { user } = useGlobalContext();
+
   const [uploading, setUploading] = useState(false);
+  const { data: categories, refetch } = useAppwrite(() =>
+    getAllCategoriesEntriesByUser()
+  );
+
   const [form, setForm] = useState({
     title: "",
     content: "",
@@ -32,8 +39,16 @@ const Categories = () => {
     category_id: "",
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const categories = useCategories();
 
+  // function to fetch all categories created to be loaded into the form when page mounts
+  useEffect(() => {
+    const fetchCategories = async () => {
+      await refetch();
+    };
+    fetchCategories();
+  }, []);
+
+  // function to pick image 
   const openPicker = async () => {
     const result = await DocumentPicker.getDocumentAsync({
       type: ["image/png", "image/jpg"],
@@ -51,6 +66,7 @@ const Categories = () => {
     }
   };
 
+  // function to handle submission of a new journal entry data
   const submit = async () => {
     if (form.title === "" || form.content === "") {
       return Alert.alert("Please provide all fields");
@@ -124,7 +140,7 @@ const Categories = () => {
               Select Category
             </Text>
             <Picker
-              selectedValue={form.category}
+              selectedValue={form.category_id}
               onValueChange={(itemValue, itemIndex) =>
                 setForm({ ...form, category_id: itemValue })
               }
