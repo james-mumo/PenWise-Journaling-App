@@ -1,3 +1,4 @@
+// creation of the User, Category and JournalEntry Model Inetrfaces to define the types
 export interface UserInterface {
   id: number;
   username: string;

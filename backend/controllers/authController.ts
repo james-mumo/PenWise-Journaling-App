@@ -6,17 +6,16 @@ import { generateAccessToken, generateRefreshAccessToken } from "../utils/jwt";
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
 let refreshTokens: string[] = [];
 
+// method to handle user registration
 export const register = async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
     const user = await User.create(username, email, password);
 
-    // Generate tokens
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshAccessToken(user);
     refreshTokens.push(refreshToken);
 
-    // Send response with tokens and user data
     res.status(201).json({ accessToken, refreshToken, user });
   } catch (error: any) {
     console.error("Error registering new user: ", error);
@@ -24,6 +23,7 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
+// method to handle user login
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -44,6 +44,7 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+// method to handle token generation and refreshing
 export const token = async (req: Request, res: Response) => {
   try {
     const { token } = req.body;
@@ -67,6 +68,8 @@ export const token = async (req: Request, res: Response) => {
     res.status(500).send("Token refresh failed");
   }
 };
+
+// method to fetch user details
 export const getDetails = async (req: Request, res: Response) => {
   try {
     const userId = req.user.userId;
@@ -80,5 +83,33 @@ export const getDetails = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error fetching user details:", error);
     res.status(500).send("Failed to fetch user details");
+  }
+};
+
+// method to update user detaills
+export const updateDetails = async (req: Request, res: Response) => {
+  try {
+    const { currentPassword, newPassword, email, username } = req.body;
+    const userId = req.user.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    const passwordValid = await user.verifyPassword(currentPassword);
+    if (!passwordValid) {
+      return res.status(401).send("Current password is incorrect");
+    }
+
+    await user.updateDetails(email, username, newPassword);
+
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshAccessToken(user);
+
+    res.json({ accessToken, refreshToken });
+  } catch (error: any) {
+    console.error("Error updating user details:", error);
+    res.status(500).send("Failed to update user details");
   }
 };
