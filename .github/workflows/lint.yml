@@ -1,8 +1,10 @@
-name: Backend Lint Check
+name: Fullstack Lint Check
 
 on:
   pull_request:
   push:
+    branches:
+      - main # default branch name of my project
 
 jobs:
   lint:
@@ -12,18 +14,34 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Set up Node.js (Backend)
         uses: actions/setup-node@v2
         with:
-          node-version: "18.9.1"
+          node-version: "18.9.1" # Node.js version
 
       - name: Navigate to Backend Directory and Install Dependencies
         run: |
-          cd backend  # Navigate to backend directory
-          npm ci  # Install backend dependencies using `npm ci`
-          npm install --only=dev  # Install dev dependencies if needed
+          cd backend
+          npm ci
+          npm install --only=dev
 
-      - name: Run ESLint on Backend Code # Run ESLint for backend linting
+      - name: Run ESLint on Backend Code
         run: |
-          cd backend  # Ensure we're in the backend directory
-          npm run lint  # Adjust the command based on your setup
+          cd backend
+          npm run lint
+
+      - name: Set up Node.js (Frontend)
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18.9.1" # Node.js version
+
+      - name: Navigate to frontend Directory and Install Dependencies
+        run: |
+          cd frontend
+          npm ci
+          npm install --only=dev
+
+      - name: Run ESLint on Frontend Code
+        run: |
+          cd frontend
+          npm run lint

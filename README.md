@@ -108,6 +108,12 @@ in the `package.json` for the React Native Expo app.
 ## Tests 
 
 ```bash
+    # for eslint testing run:
+    npx expo lint
+
+
+    # for jest testing
+    npm test
 
 ```
 
@@ -354,10 +360,14 @@ backend/
 
 
 ## Backend Tests
-    ```{
+```bash
+    # for eslint testing run:
+    npm run lint
 
-    }
-    ```
+    # for jest testing
+    npm test
+    
+```
 
 
 

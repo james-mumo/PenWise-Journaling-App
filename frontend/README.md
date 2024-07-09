@@ -104,6 +104,11 @@ in the `package.json` for the React Native Expo app.
 ## Tests 
 
 ```bash
+    # for eslint testing run:
+    npx expo lint
+
+    # for jest testing
+    npm test
 
 ```
 

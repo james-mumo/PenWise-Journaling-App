@@ -7,7 +7,5 @@
     "ecmaVersion": 2020,
     "sourceType": "module"
   },
-  "rules": {
-    // Add project-specific rules here
-  }
+  "rules": {}
 }

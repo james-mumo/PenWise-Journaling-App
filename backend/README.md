@@ -148,10 +148,15 @@ backend/
 
 
 ## Backend Tests
-    ```{
+```bash
+    # for eslint testing run
+    npm run lint
 
-    }
-    ```
+
+    # for jest testing
+    npm test
+
+```
 
 
 
