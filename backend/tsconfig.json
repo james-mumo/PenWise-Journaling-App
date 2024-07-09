@@ -5,7 +5,8 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true /* Enable all strict type-checking options. */,
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true
   }
 }
