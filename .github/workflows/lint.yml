@@ -1,0 +1,29 @@
+name: Backend Lint Check
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18.9.1"
+
+      - name: Navigate to Backend Directory and Install Dependencies
+        run: |
+          cd backend  # Navigate to backend directory
+          npm ci  # Install backend dependencies using `npm ci`
+          npm install --only=dev  # Install dev dependencies if needed
+
+      - name: Run ESLint on Backend Code # Run ESLint for backend linting
+        run: |
+          cd backend  # Ensure we're in the backend directory
+          npm run lint  # Adjust the command based on your setup
