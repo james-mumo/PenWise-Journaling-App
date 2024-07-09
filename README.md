@@ -23,6 +23,10 @@
 - [License](#license)
 
 
+## Preview
+
+![screenshots](screenshots/images_collage.png)
+
 
 ## Prerequisites
 
